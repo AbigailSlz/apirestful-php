@@ -109,7 +109,7 @@ class PublicationsController{
             $Publication = new PublicationsModel();
             $publication = $Publication->search_publication($id_publication);
 
-            if(!$publication){
+            if(!$publication->num_rows){
                 $response = array(
                     "status" => 404,
                     "error" => "No se encontró la publicación",
@@ -120,36 +120,55 @@ class PublicationsController{
                 return;
             }
 
-            $data = array(
-                "titulo" => $titulo["value"],
-                "descripcion" => $descripcion["value"],
-                "id_publicacion" => $id_publication
-            );
 
-            //Actualizar la publicación
-           
-            $publication = $Publication->update($data);
+            foreach($publication as $key){
+
+                if($key["estado"] == 0){
+                    $response = array(
+                        "status" => 404,
+                        "error" => "Publicación no encontrada",
+                    );
+                
+                    http_response_code(404);
+                    echo json_encode($response, true);
+                    return;
+                }else{
+
+                    $data = array(
+                        "titulo" => $titulo["value"],
+                        "descripcion" => $descripcion["value"],
+                        "id_publicacion" => $id_publication
+                    );
         
-            //Enviar mensaje del resultado de la operación
-            if($publication){
-                $response = array(
-                    "status" => 200,
-                    "message" => "Publicación actualizada correctamente"
-                );
+                    //Actualizar la publicación
+                   
+                    $publication = $Publication->update($data);
+                
+                    //Enviar mensaje del resultado de la operación
+                    if($publication){
+                        $response = array(
+                            "status" => 200,
+                            "message" => "Publicación actualizada correctamente"
+                        );
+                    
+                        http_response_code(200);
+                        echo json_encode($response, true);
+                        return;
+        
+                    }else{
+                        $response = array(
+                            "status" => 500,
+                            "error" => "Error al actualizar la publicación",
+                        );
+                    
+                        http_response_code(500);
+                        echo json_encode($response, true);
+                        return;
+                    }
+                    
+                }
             
-                http_response_code(200);
-                echo json_encode($response, true);
-                return;
 
-            }else{
-                $response = array(
-                    "status" => 500,
-                    "error" => "Error al actualizar la publicación",
-                );
-            
-                http_response_code(500);
-                echo json_encode($response, true);
-                return;
             }
 
         }else{
@@ -161,16 +180,16 @@ class PublicationsController{
         }
     }
 
-    public function delete($id_publication){
+    public function change_status($id_publication){
 
-        //Eliminar la publicación
+        //Cambiar de estado la publicación
         $Publication = new PublicationsModel();
 
          //Verificar si la publicación existe
          $Publication = new PublicationsModel();
          $publication = $Publication->search_publication($id_publication);
 
-         if(!$publication){
+         if(!$publication->num_rows){
              $response = array(
                  "status" => 404,
                  "error" => "No se encontró la publicación",
@@ -181,29 +200,43 @@ class PublicationsController{
              return;
          }
 
-        $publication = $Publication->delete($id_publication);
-        
-        
-        //Enviar mensaje del resultado de la operación
-        if($publication){
-            $response = array(
-                "status" => 200,
-                "message" => "Publicación eliminada correctamente"
-            );
-        
-            http_response_code(200);
-            echo json_encode($response, true);
-            return;
+         foreach($publication as $key){
 
-        }else{
-            $response = array(
-                "status" => 500,
-                "error" => "Error al eliminar la publicación",
-            );
+            if($key["estado"] == 0){
+                $response = array(
+                    "status" => 404,
+                    "error" => "La publicación ya se encuentra desactivada",
+                );
+            
+                http_response_code(404);
+                echo json_encode($response, true);
+                return;
+            }else{
+
+                $publication = $Publication->change_status($id_publication);
+
+                //Enviar mensaje del resultado de la operación
+                if($publication){
+                    $response = array(
+                        "status" => 200,
+                        "message" => "Publicación desactivada correctamente"
+                    );
+                
+                    http_response_code(200);
+                    echo json_encode($response, true);
+                    return;
         
-            http_response_code(500);
-            echo json_encode($response, true);
-            return;
+                }else{
+                    $response = array(
+                        "status" => 500,
+                        "error" => "Error al desactivar la publicación",
+                    );
+                
+                    http_response_code(500);
+                    echo json_encode($response, true);
+                    return;
+                }
+            }
         }
     }
     public function read(){
@@ -226,7 +259,7 @@ class PublicationsController{
                     "nombre" => $key["nombre"],
                     "rol" => $key["rol"]
                 );
-
+                
                 $values['publicaciones'][] = $data;
                 
             }

@@ -64,43 +64,13 @@ class PublicationsModel extends Connection{
         }
     }
 
-    public function delete($id_publicacion){
-        
-        //Conectar a la base de datos
-        $conexion = $this->connect_db();
-
-        //Preparar la consulta
-        $query = mysqli_prepare($conexion, "DELETE FROM publications WHERE id_publicacion=?");
-        
-        // Comprobamos si la preparación se finalizó con éxito o hubo error 
-        if ($query === false) {
-          
-            return false;
-        }
-
-        //Pasar los parámetros
-        $query->bind_param("i",$id_publicacion);
-
-        //Ejecutar la consulta
-        $query->execute();
-
-        // Comprobamos si la ejecución se finalizó con éxito o hubo error 
-        if ($query === false) {
-
-           return false;
-
-        } else {
-             return true;
-        }
-    }
-
     public function search_publication($id_publicacion){
  
         //Conectar a la base de datos
         $conexion = $this->connect_db();
 
         //Preparar la consulta
-        $query = mysqli_prepare($conexion, "SELECT id_publicacion FROM publications WHERE id_publicacion = ?");
+        $query = mysqli_prepare($conexion, "SELECT id_publicacion, estado FROM publications WHERE id_publicacion = ?");
        
         // Comprobamos si la preparación se finalizó con éxito o hubo error 
         if ($query === false) {
@@ -121,7 +91,7 @@ class PublicationsModel extends Connection{
 
         } else {
 
-            return $query->get_result()->num_rows;
+            return $query->get_result();
         }
     }
 
@@ -131,7 +101,7 @@ class PublicationsModel extends Connection{
         $conexion = $this->connect_db();
 
         //Preparar la consulta
-        $query = mysqli_prepare($conexion, "SELECT id_publicacion, titulo, descripcion, fecha_creacion, users.id_user, users.nombre, users.rol FROM publications LEFT JOIN users ON publications.id_user = users.id_user");
+        $query = mysqli_prepare($conexion, "SELECT id_publicacion, titulo, descripcion, fecha_creacion, estado, users.id_user, users.nombre, users.rol FROM publications LEFT JOIN users ON publications.id_user = users.id_user WHERE estado=1");
        
         // Comprobamos si la preparación se finalizó con éxito o hubo error 
         if ($query === false) {
@@ -150,6 +120,38 @@ class PublicationsModel extends Connection{
         } else {
 
             return $query->get_result();
+        }
+    }
+
+    public function change_status($id_publicacion){
+        
+        //Conectar a la base de datos
+        $conexion = $this->connect_db();
+
+        //Preparar la consulta
+        $query = mysqli_prepare($conexion, "UPDATE publications SET estado=? WHERE id_publicacion=?");
+        
+        // Comprobamos si la preparación se finalizó con éxito o hubo error 
+        if ($query === false) {
+          
+            return false;
+        }
+
+        $estado=0;
+
+        //Pasar los parámetros
+        $query->bind_param("ii",$estado,$id_publicacion);
+
+        //Ejecutar la consulta
+        $query->execute();
+
+        // Comprobamos si la ejecución se finalizó con éxito o hubo error 
+        if ($query === false) {
+
+           return false;
+
+        } else {
+             return true;
         }
     }
 }

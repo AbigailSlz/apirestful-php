@@ -149,7 +149,7 @@ if($length <= 1){
                     if($permission){
                         //Realizar acción
                         $Publication = new PublicationsController();
-                        $Publication -> delete($routeArray[3]);   
+                        $Publication -> change_status($routeArray[3]);   
 
                     }else{
                         //Denegar acceso
