@@ -206,5 +206,46 @@ class PublicationsController{
             return;
         }
     }
+    public function read(){
+
+        //Listar las publicaciones
+        $Publication = new PublicationsModel();
+        $publication = $Publication->read();
+               
+        //Enviar mensaje del resultado de la operación
+        if($publication){
+            
+            $values['totalPublicaciones'] = $publication->num_rows;
+            foreach($publication as $key){
+              
+                
+                $data["titulo"] = $key["titulo"];
+                $data["descripcion"] = $key["titulo"];
+                $data["fecha_creacion"] = $key["titulo"];
+                $data["usuario"] = array(
+                    "nombre" => $key["nombre"],
+                    "rol" => $key["rol"]
+                );
+
+                $values['publicaciones'][] = $data;
+                
+            }
+ 
+            http_response_code(200);
+            echo json_encode($values, true);       
+
+            return;
+
+        }else{
+            $response = array(
+                "status" => 500,
+                "error" => "Error al listar las publicaciones",
+            );
+        
+            http_response_code(500);
+            echo json_encode($response, true);
+            return;
+        }
+    }
     
 }

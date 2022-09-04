@@ -174,6 +174,33 @@ if($length <= 1){
             }         
     
             break;
+        case 'get:publicaciones':
+
+            // Verificar token
+            $token = $Token->verifyJWT($_SERVER['HTTP_AUTHORIZATION']);
+        
+            if($token){
+                
+                //Validar los permisos del rol
+                $permission = $Permissions->verify_rol($token->data->rol,strtolower($method));
+                
+                if($permission){
+                    //Realizar acción
+                    $Publication = new PublicationsController();
+                    $Publication -> read();   
+
+                }else{
+                    //Denegar acceso
+                    $response = array(
+                        "status" => 403,
+                        "error" => "Acceso denegado",
+                    );
+                    http_response_code(403);
+                    echo json_encode($response, true);
+                    return;
+                }                
+            }   
+            break;
         default:
             http_response_code(404);
             echo "Cannot ". $method ." ".$routeName;

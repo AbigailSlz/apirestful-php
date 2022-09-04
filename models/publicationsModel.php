@@ -124,4 +124,32 @@ class PublicationsModel extends Connection{
             return $query->get_result()->num_rows;
         }
     }
+
+    public function read(){
+ 
+        //Conectar a la base de datos
+        $conexion = $this->connect_db();
+
+        //Preparar la consulta
+        $query = mysqli_prepare($conexion, "SELECT id_publicacion, titulo, descripcion, fecha_creacion, users.id_user, users.nombre, users.rol FROM publications INNER JOIN users ON publications.id_user = users.id_user");
+       
+        // Comprobamos si la preparación se finalizó con éxito o hubo error 
+        if ($query === false) {
+          
+            return false;
+        }
+
+        //Ejecutar la consulta
+        $query->execute();
+        
+        // Comprobamos si la ejecución se finalizó con éxito o hubo error 
+        if ($query === false) {
+
+           return false;
+
+        } else {
+
+            return $query->get_result();
+        }
+    }
 }
