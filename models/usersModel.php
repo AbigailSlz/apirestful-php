@@ -4,6 +4,37 @@ require_once "conexion.php";
 
 class usersModel extends Connection{
 
+    public function login($correo, $password){
+        //Conectar a la base de datos
+        $conexion = $this->connect_db();
+
+        //Preparar la consulta
+        $query = mysqli_prepare($conexion, "SELECT id_user, nombre, apellidos, correo, rol  FROM users WHERE correo = ? AND pass = ?");
+        
+        // Comprobamos si la preparación se finalizó con éxito o hubo error 
+        if ($query === false) {
+        
+            return false;
+        }
+
+        //Pasar los parámetros
+        $query->bind_param("ss",$correo, $password);
+
+        //Ejecutar la consulta
+        $query->execute();
+        
+        // Comprobamos si la ejecución se finalizó con éxito o hubo error 
+        if ($query === false) {
+
+            return false;
+
+        } else {
+
+            return $query->get_result();
+        }
+
+    }
+    
     public function create($data){
         
         //Conectar a la base de datos

@@ -74,6 +74,42 @@ function validation_string($value, $type, $campo){
                 return $response;
 
             }
+
+            break;
+        case 'password':
+            if(!empty($value)){
+
+               
+                $response = array(
+                    "status" => true,
+                    "value" => $value,
+                    "error" => "",
+                );
+            
+                return $response;
+            
+            }else{
+                
+                $response = array(
+                    "status" => false,
+                    "value"=> "",
+                    "error" => "Error en el campo ".$campo.", no se permiten valores vacíos",
+                );
+            
+                return $response;
+
+            }
+
+            break;
+        default:
+            
+            $response = array(
+                "status" => false,
+                "value"=> "",
+                "error" => "Validación no encontrada",
+            );
+        
+            return $response;
             break;
     }
 }
