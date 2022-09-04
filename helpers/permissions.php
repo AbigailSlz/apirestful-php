@@ -42,6 +42,9 @@ class Permissions{
                     return false;
                 }
                 break;
+            default:
+                return false;
+            break;
         }
     }
 
