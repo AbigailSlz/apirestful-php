@@ -19,8 +19,8 @@ class PublicationsController{
         }
         
         //Validar caracteres
-        $titulo = validation_string($titulo,'string','titulo');
-        $descripcion = validation_string($descripcion,'string','descripcion');
+        $titulo = validation_string($titulo,'publication','titulo');
+        $descripcion = validation_string($descripcion,'publication','descripcion');
 
         //Dar formato a los errores
         $errors = [];
@@ -91,8 +91,8 @@ class PublicationsController{
         }
         
         //Validar caracteres
-        $titulo = validation_string($titulo,'string','titulo');
-        $descripcion = validation_string($descripcion,'string','descripcion');
+        $titulo = validation_string($titulo,'publication','titulo');
+        $descripcion = validation_string($descripcion,'publication','descripcion');
 
         //Dar formato a los errores
         $errors = [];
@@ -218,10 +218,10 @@ class PublicationsController{
             $values['totalPublicaciones'] = $publication->num_rows;
             foreach($publication as $key){
               
-                
+                $data["id_publicacion"] = $key["id_publicacion"];
                 $data["titulo"] = $key["titulo"];
-                $data["descripcion"] = $key["titulo"];
-                $data["fecha_creacion"] = $key["titulo"];
+                $data["descripcion"] = $key["descripcion"];
+                $data["fecha_creacion"] = $key["fecha_creacion"];
                 $data["usuario"] = array(
                     "nombre" => $key["nombre"],
                     "rol" => $key["rol"]

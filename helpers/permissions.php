@@ -19,7 +19,7 @@ class Permissions{
                 }
 
                 break;
-            case 'medio-alto':
+            case 'medioalto':
   
                 if($method == 'post') {
                     return true;
@@ -28,7 +28,7 @@ class Permissions{
                 }
 
                 break;
-            case 'alto-medio':
+            case 'altomedio':
                 if($method == 'post' || $method == 'get' || $method =='put') {
                     return true;
                 }else{

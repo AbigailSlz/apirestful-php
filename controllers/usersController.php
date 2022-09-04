@@ -28,11 +28,11 @@ class UsersController{
         $nombre = validation_string($nombre,'string','nombre');
         $apellido = validation_string($apellido,'string','apellido');
         $correo = validation_string($correo,'email','correo');
-        $rol = validation_string($rol,'string','rol');
+        $rol = validation_string($rol,'rol','rol');
 
         //Dar formato a los errores
         $errors = [];
-        if($nombre["error"] ||  $apellido["error"] || $apellido["error"]){
+        if($nombre["error"] ||  $apellido["error"] || $correo["error"] || $rol["error"]){
             array_push($errors,$nombre["error"]);
             array_push($errors,$apellido["error"]);
             array_push($errors,$correo["error"]);

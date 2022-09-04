@@ -131,7 +131,7 @@ class PublicationsModel extends Connection{
         $conexion = $this->connect_db();
 
         //Preparar la consulta
-        $query = mysqli_prepare($conexion, "SELECT id_publicacion, titulo, descripcion, fecha_creacion, users.id_user, users.nombre, users.rol FROM publications INNER JOIN users ON publications.id_user = users.id_user");
+        $query = mysqli_prepare($conexion, "SELECT id_publicacion, titulo, descripcion, fecha_creacion, users.id_user, users.nombre, users.rol FROM publications LEFT JOIN users ON publications.id_user = users.id_user");
        
         // Comprobamos si la preparación se finalizó con éxito o hubo error 
         if ($query === false) {
