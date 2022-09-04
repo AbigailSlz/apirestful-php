@@ -60,7 +60,7 @@ class AuthController{
                     );
 
                     //Generar el token
-                    $Token = new token();
+                    $Token = new Token();
                     $token = $Token->generateJWT($key["id_user"], $key["rol"]);
 
                 }

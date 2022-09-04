@@ -1,8 +1,9 @@
 <?php
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
-class token{
+class Token{
 
     public function generateJWT($userId, $rol){
 
@@ -27,12 +28,34 @@ class token{
         $key = 'secretKeyApiTokenGeniat2022';
         $encrypt = 'HS256';
 
-        if(empty($token)){
+        try{
 
-            return "Invalid token";
+            if(empty($token)){
+
+                $response = array(
+                    "status" => 400,
+                    "error" => "No hay un token en la petición",
+                );
+            
+                http_response_code(400);
+                echo json_encode($response, true);
+                return;
+            }
+    
+            $decoded = JWT::decode($token, new Key($key, $encrypt));
+            return $decoded;
+            
+        }catch(Exception $e){
+
+            $response = array(
+                "status" => 400,
+                "error" => "Token inválido",
+            );
+        
+            http_response_code(400);
+            echo json_encode($response, true);
+            return false;
         }
-
-        $decode = JWT::decode($token, $key, $encrypt);
-        return $decode;
+        
     }
 }

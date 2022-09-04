@@ -5,7 +5,7 @@ require_once "functions/validations.php";
 class UsersController{
 
     public function create(){
-
+ 
         //Obtener datos por json y decodificarlos
         $rawinput = file_get_contents("php://input");
         $json = json_decode($rawinput);

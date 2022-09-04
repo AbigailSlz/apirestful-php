@@ -1,6 +1,7 @@
 <?php
 
 //RUTA -> /api/
+require_once "helpers/permissions.php";
 
 //Obtener la URI en array y filtrarlo  
 $routeArray = array_filter(explode("/", $_SERVER["REQUEST_URI"]));
@@ -25,13 +26,39 @@ if($length <= 1){
     $routeName = $routeArray[2];
     $method = isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"]: '';
 
+
+    $Token = new Token();
+    $Permissions = new Permissions();
     //Validar cada ruta 
     switch(strtolower($method).':'.$routeName){
     
         case 'post:usuarios':
+                      
+            //Verificar token
+            $token = $Token->verifyJWT($_SERVER['HTTP_AUTHORIZATION']);
+                   
+            if($token){
+                
+                //Validar los permisos del rol
+                $permission = $Permissions->verify_rol($token->data->rol,strtolower($method));
+              
+                if($permission){
+                    //Realizar acción
+                    $register = new UsersController();
+                    $register -> create();   
 
-           $register = new UsersController();
-           $register -> create();
+                }else{
+                    //Denegar acceso
+                    $response = array(
+                        "status" => 403,
+                        "error" => "Acceso denegado",
+                    );
+                    http_response_code(403);
+                    echo json_encode($response, true);
+                    return;
+                }                
+
+            }         
 
             break;
         case 'post:login':
