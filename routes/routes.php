@@ -96,6 +96,84 @@ if($length <= 1){
             }   
     
             break;
+        case 'put:publicaciones':
+
+            if(isset($routeArray[3]) && is_numeric($routeArray[3])){
+                // Verificar token
+                $token = $Token->verifyJWT($_SERVER['HTTP_AUTHORIZATION']);
+            
+                if($token){
+                    
+                    //Validar los permisos del rol
+                    $permission = $Permissions->verify_rol($token->data->rol,strtolower($method));
+                    
+                    if($permission){
+                        //Realizar acción
+                        $Publication = new PublicationsController();
+                        $Publication -> update($routeArray[3]);   
+
+                    }else{
+                        //Denegar acceso
+                        $response = array(
+                            "status" => 403,
+                            "error" => "Acceso denegado",
+                        );
+                        http_response_code(403);
+                        echo json_encode($response, true);
+                        return;
+                    }                
+                }   
+            }else{
+                //Denegar acceso
+                $response = array(
+                    "status" => 404,
+                    "error" => "ID no válido",
+                );
+                http_response_code(404);
+                echo json_encode($response, true);
+                return;
+            }         
+    
+            break;
+        case 'delete:publicaciones':
+
+            if(isset($routeArray[3]) && is_numeric($routeArray[3])){
+                // Verificar token
+                $token = $Token->verifyJWT($_SERVER['HTTP_AUTHORIZATION']);
+            
+                if($token){
+                    
+                    //Validar los permisos del rol
+                    $permission = $Permissions->verify_rol($token->data->rol,strtolower($method));
+                    
+                    if($permission){
+                        //Realizar acción
+                        $Publication = new PublicationsController();
+                        $Publication -> delete($routeArray[3]);   
+
+                    }else{
+                        //Denegar acceso
+                        $response = array(
+                            "status" => 403,
+                            "error" => "Acceso denegado",
+                        );
+                        http_response_code(403);
+                        echo json_encode($response, true);
+                        return;
+                    }                
+                }   
+            }else{
+                //Denegar acceso
+                $response = array(
+                    "status" => 404,
+                    "error" => "ID no válido",
+                );
+                http_response_code(404);
+                echo json_encode($response, true);
+                return;
+            }         
+    
+            break;
         default:
             http_response_code(404);
             echo "Cannot ". $method ." ".$routeName;
